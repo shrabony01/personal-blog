@@ -1,0 +1,22 @@
+body{
+    font-family: Arial;
+    width: 600px;
+    margin: auto;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.error{
+    color: red;
+    font-size: 14px;
+}
+.post{
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 10px;
+}
+.post button{
+    margin-right: 10px;
+}
