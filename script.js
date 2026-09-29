@@ -46,3 +46,20 @@ function renderPosts(){
 
     })
 }
+// form validation
+function validateForm(){
+    let valid=true;
+
+    titleError.innerText='';
+    contentError.innerText='';
+
+    if(titleInput.ariaValueMax.trim()===''){
+        titleError.innerText='Title is required.';
+        valid=false;
+    }
+    if(contentInput.value.trim()===''){
+        contentError.innerText='Content is required.';
+        valid= false;
+    }
+    return valid;
+}
