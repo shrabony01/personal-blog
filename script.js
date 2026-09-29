@@ -63,3 +63,32 @@ function validateForm(){
     }
     return valid;
 }
+
+// handling(create/update) form submission
+postForm.addEventListener('submit',function(e){
+    e.preventDefault();
+
+    if(!validateForm())
+        return;
+    if(editingPostId===null){
+        // create new post
+
+        const newPost={
+            id:Date.now(),
+            title:titleInput.value,
+            content:contentInput.value
+        };
+        posts.push(newPost);
+    }
+    else{
+        // update existing post
+        const post = posts.find(p =>p.id===editingPostId);
+        post.title=titleInput.value;
+        post.content=contentInput.value;
+
+        editingPostId=null;
+    }
+    savePosts();
+    renderPosts();
+    postForm.reset();
+});
