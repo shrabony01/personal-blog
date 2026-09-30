@@ -18,12 +18,14 @@ const submitBtn = document.querySelector('button[type="submit"]');
 
 function loadPosts(){
     const saved=localStorage.getItem('blogPosts');
-    if(saved){
-        posts=JSON.parse(saved);
-        
-    } catch {
+    if(saved){ 
+        try{
+            posts=JSON.parse(saved);
+        }catch {
         posts=[];
     }
+    }
+    
     renderPosts();
 }
 loadPosts();
@@ -34,7 +36,12 @@ function savePosts(){
 }
 // Render posts on the page
 function renderPosts(){
-    postContainer.innerHTML='<p>No posts yet. Write your first post above!</p>';
+    postContainer.innerHTML = '';
+
+    if (posts.length === 0) {
+        postContainer.innerHTML = '<p>No posts yet. Write your first post above!</p>';
+        return;
+    }
 
     posts.forEach(post => {
         const postCard=document.createElement('article');
@@ -123,6 +130,16 @@ postContainer.addEventListener('click',function(e){
     const action=e.target.dataset.action;
     if(!action)
         return;
+
+    const postCard=e.target.closest('.post');
+    const id= Number(postCard.dataset.id);
+
+    if(action ==='delete'){
+        deletePost(id);
+
+    }else if(action === 'edit'){
+        editPost(id);
+    }
 })
 
 // delete post
