@@ -78,35 +78,47 @@ contentInput.addEventListener('input', () =>{
     if(contentInput.value.trim() !=='') contentError.textContent='';
 });
 
-// handling(create/update) form submission
+// handle form submission
 postForm.addEventListener('submit',function(e){
     e.preventDefault();
 
     if(!validateForm())
         return;
 
+    const formattedDate = new Date().toLocaleString([], {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+    });
+
     if(editingPostId===null){
-        // create new post
 
         const newPost={
             id:Date.now(),
-            title:titleInput.value,
-            content:contentInput.value
+            title:titleInput.value.trim(),
+            content:contentInput.value.trim(),
+            timestamp:formattedDate
         };
-        posts.push(newPost);
+        posts.unshift(newPost);
     }
     else{
         // update existing post
         const post = posts.find(p =>p.id===editingPostId);
-        post.title=titleInput.value;
-        post.content=contentInput.value;
+        if(post){
+
+            post.title=titleInput.value.trim();
+        post.content=contentInput.value.trim();
+        post.timestamp= `Updated: ${formattedDate}`;
+        }
+        
 
         editingPostId=null;
+        submitBtn.textContent = 'Save Post';
     }
     savePosts();
     renderPosts();
     postForm.reset();
 });
+
 // delete post
 function deletePost(id){
     posts=posts.filter(post => post.id !==id);
