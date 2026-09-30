@@ -21,7 +21,7 @@ function loadPosts(){
     if(saved){
         posts=JSON.parse(saved);
         
-    }catch(e){
+    } catch {
         posts=[];
     }
     renderPosts();
@@ -70,6 +70,13 @@ function validateForm(){
     }
     return valid;
 }
+// real time validation
+titleInput.addEventListener('input',() =>{
+    if(titleInput.value.trim() !== '') titleError.textContent='';
+});
+contentInput.addEventListener('input', () =>{
+    if(contentInput.value.trim() !=='') contentError.textContent='';
+});
 
 // handling(create/update) form submission
 postForm.addEventListener('submit',function(e){
@@ -77,6 +84,7 @@ postForm.addEventListener('submit',function(e){
 
     if(!validateForm())
         return;
+
     if(editingPostId===null){
         // create new post
 
@@ -102,6 +110,11 @@ postForm.addEventListener('submit',function(e){
 // delete post
 function deletePost(id){
     posts=posts.filter(post => post.id !==id);
+    if (editingPostId === id) {
+        editingPostId = null;
+        submitBtn.textContent = 'Save Post';
+        postForm.reset();
+    }
     savePosts();
     renderPosts();
 }
@@ -109,9 +122,12 @@ function deletePost(id){
 // Edit Post
 function editPost(id){
     const post = posts .find (p => p.id===id);
+    if(!post) return;
 
     titleInput.value=post.title;
     contentInput.value = post.content;
 
     editingPostId =id;
+    submitBtn.textContent ='Update Post';
+    titleInput.focus();
 }
