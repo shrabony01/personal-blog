@@ -118,6 +118,12 @@ postForm.addEventListener('submit',function(e){
     renderPosts();
     postForm.reset();
 });
+// event delegation for edit/delete
+postContainer.addEventListener('click',function(e){
+    const action=e.target.dataset.action;
+    if(!action)
+        return;
+})
 
 // delete post
 function deletePost(id){
