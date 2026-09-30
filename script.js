@@ -3,23 +3,28 @@ let posts=[];
 // keep track which post is being edited
 let editingPostId=null;
 
-const postForm=document.getElementById('postForm');
-const titleInput =document.getElementById('titleInput');
-const contentInput=document.getElementById('contentInput');
+const postForm=document.querySelector('#postForm');
 
-const titleError=document.getElementById('titleError');
-const contentError=document.getElementById('contentError');
+const titleInput =document.querySelector('#titleInput');
+const contentInput=document.querySelector('#contentInput');
 
-const postContainer=document.getElementById('postContainer');
+const titleError=document.querySelector('#titleError');
+const contentError=document.querySelector('#contentError');
 
+const postContainer=document.querySelector('#postContainer');
+
+const submitBtn = document.querySelector('button[type="submit"]');
 // load post from localstorage
 
 function loadPosts(){
     const saved=localStorage.getItem('blogPosts');
     if(saved){
         posts=JSON.parse(saved);
-        renderPosts();
+        
+    }catch(e){
+        posts=[];
     }
+    renderPosts();
 }
 loadPosts();
 
@@ -29,20 +34,22 @@ function savePosts(){
 }
 // Render posts on the page
 function renderPosts(){
-    postContainer.innerHTML='';
+    postContainer.innerHTML='<p>No posts yet. Write your first post above!</p>';
 
     posts.forEach(post => {
-        const div=document.createElement('div');
-        div.classList.add('post');
+        const postCard=document.createElement('article');
+        postCard.classList.add('post');
+        postCard.setAttribute('data-id', post.id);
 
-        div.innerHTML=`
+        postCard.innerHTML=`
             <h3>${post.title}</h3>
+            <small>${post.timestamp}</small>
             <p>${post.content}</p>
-            <button onclick='editPost(${post.id})'>Edit</button>
-             <button onclick='deletePost(${post.id})'>Delete</button>
+            <button data-action="edit">Edit</button>
+            <button data-action="delete">Delete</button>
         
         `;
-        postContainer.appendChild(div);
+        postContainer.appendChild(postCard);
 
     })
 }
@@ -50,15 +57,15 @@ function renderPosts(){
 function validateForm(){
     let valid=true;
 
-    titleError.innerText='';
-    contentError.innerText='';
+    titleError.textContent='';
+    contentError.textContent='';
 
-    if(titleInput.ariaValueMax.trim()===''){
-        titleError.innerText='Title is required.';
+    if(titleInput.value.trim()===''){
+        titleError.textContent='Title is required.';
         valid=false;
     }
     if(contentInput.value.trim()===''){
-        contentError.innerText='Content is required.';
+        contentError.textContent='Content is required.';
         valid= false;
     }
     return valid;
@@ -92,3 +99,19 @@ postForm.addEventListener('submit',function(e){
     renderPosts();
     postForm.reset();
 });
+// delete post
+function deletePost(id){
+    posts=posts.filter(post => post.id !==id);
+    savePosts();
+    renderPosts();
+}
+
+// Edit Post
+function editPost(id){
+    const post = posts .find (p => p.id===id);
+
+    titleInput.value=post.title;
+    contentInput.value = post.content;
+
+    editingPostId =id;
+}
